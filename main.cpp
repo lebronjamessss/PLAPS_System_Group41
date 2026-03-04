@@ -1,4 +1,6 @@
 #include <iostream>
+#include "LearnerQueue.hpp"
+#include "Learner.hpp"
 
 using namespace std;
 
@@ -12,7 +14,20 @@ void showMainMenu() {
     cout << "Choose option: ";
 }
 
+void showLearnerMenu() {
+    cout << "\n===== Learner Registration & Session Management =====\n";
+    cout << "1. Register Learner\n";
+    cout << "2. Start Session (Move learner from queue)\n";
+    cout << "3. Exit Session\n";
+    cout << "4. Show Registration Queue\n";
+    cout << "5. Show Active Session\n";
+    cout << "6. Back\n";
+    cout << "Choose option: ";
+}
+
 int main() {
+
+    LearnerQueue learnerQueue;
 
     int choice;
 
@@ -22,7 +37,50 @@ int main() {
         cin >> choice;
 
         if (choice == 1) {
-            cout << "\n[Task 1 - Queue Module]\n";
+
+            int option;
+
+            do {
+
+                showLearnerMenu();
+                cin >> option;
+
+                if (option == 1) {
+
+                    Learner learner;
+
+                    cout << "Enter Learner ID: ";
+                    cin >> learner.learnerID;
+
+                    cout << "Enter Name: ";
+                    cin >> learner.name;
+
+                    learnerQueue.registerLearner(learner);
+                }
+
+                else if (option == 2) {
+                    learnerQueue.startSession();
+                }
+
+                else if (option == 3) {
+
+                    int id;
+
+                    cout << "Enter learner ID to exit session: ";
+                    cin >> id;
+
+                    learnerQueue.exitSession(id);
+                }
+
+                else if (option == 4) {
+                    learnerQueue.displayQueue();
+                }
+
+                else if (option == 5) {
+                    learnerQueue.displayActiveSession();
+                }
+
+            } while (option != 6);
         }
 
         else if (choice == 2) {
