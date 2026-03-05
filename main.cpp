@@ -34,7 +34,12 @@ int main() {
     do {
 
         showMainMenu();
-        cin >> choice;
+        if (!(cin >> choice)) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
 
         if (choice == 1) {
 
@@ -43,17 +48,38 @@ int main() {
             do {
 
                 showLearnerMenu();
-                cin >> option;
+                if (!(cin >> option)) {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    cout << "Invalid input. Please enter a number.\n";
+                    continue;
+                }
 
                 if (option == 1) {
 
                     Learner learner;
 
-                    cout << "Enter Learner ID: ";
-                    cin >> learner.learnerID;
+                    cin.ignore(1000, '\n');
 
-                    cout << "Enter Name: ";
-                    cin >> learner.name;
+                    cout << "Enter Learner Name: ";
+                    getline(cin, learner.name);
+
+                    // validate name BEFORE generating ID
+                    bool validName = false;
+
+                    for (char c : learner.name) {
+                        if (!isspace(c)) {
+                            validName = true;
+                            break;
+                        }
+                    }
+
+                    if (!validName) {
+                        cout << "\nInvalid name. Registration failed.\n";
+                        continue;
+                    }
+
+                    learner.learnerID = learnerQueue.generateLearnerID();
 
                     learnerQueue.registerLearner(learner);
                 }
@@ -67,7 +93,12 @@ int main() {
                     int id;
 
                     cout << "Enter learner ID to exit session: ";
-                    cin >> id;
+                    if (!(cin >> id)) {
+                        cin.clear();
+                        cin.ignore(1000, '\n');
+                        cout << "Invalid learner ID.\n";
+                        continue;
+                    }
 
                     learnerQueue.exitSession(id);
                 }

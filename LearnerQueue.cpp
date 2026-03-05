@@ -7,6 +7,7 @@ LearnerQueue::LearnerQueue() {
     front = -1;
     rear = -1;
     activeCount = 0;
+    nextLearnerID = 1001;
 }
 
 bool LearnerQueue::isEmpty() {
@@ -17,10 +18,19 @@ bool LearnerQueue::isFull() {
     return rear == MAX_QUEUE - 1;
 }
 
+int LearnerQueue::generateLearnerID() {
+    return nextLearnerID++;
+}
+
 void LearnerQueue::registerLearner(Learner learner) {
 
     if (isFull()) {
-        cout << "Registration queue is full.\n";
+        cout << "\nRegistration queue is full. Cannot register more learners.\n";
+        return;
+    }
+
+    if (learner.name.empty()) {
+        cout << "\nInvalid name. Registration failed.\n";
         return;
     }
 
@@ -31,18 +41,22 @@ void LearnerQueue::registerLearner(Learner learner) {
     rear++;
     queue[rear] = learner;
 
-    cout << "Learner registered successfully.\n";
+    int position = rear - front + 1;
+
+    cout << "\nLearner registered successfully.\n";
+    cout << "Learner ID: " << learner.learnerID << endl;
+    cout << "Queue position: " << position << endl;
 }
 
 void LearnerQueue::startSession() {
 
     if (isEmpty()) {
-        cout << "No learners waiting.\n";
+        cout << "\nNo learners waiting in the queue.\n";
         return;
     }
 
     if (activeCount >= SESSION_CAPACITY) {
-        cout << "Session is full.\n";
+        cout << "\nSession is full. Cannot add more learners.\n";
         return;
     }
 
@@ -57,7 +71,8 @@ void LearnerQueue::startSession() {
     activeSession[activeCount] = learner;
     activeCount++;
 
-    cout << learner.name << " entered the session.\n";
+    cout << "\nLearner entered session successfully.\n";
+    cout << learner.learnerID << " - " << learner.name << endl;
 }
 
 void LearnerQueue::exitSession(int learnerID) {
@@ -83,29 +98,53 @@ void LearnerQueue::exitSession(int learnerID) {
 void LearnerQueue::displayQueue() {
 
     if (isEmpty()) {
-        cout << "Registration queue empty.\n";
+        cout << "\n===== Registration Queue =====\n";
+        cout << "No learners waiting.\n";
         return;
     }
 
-    cout << "\nRegistration Queue:\n";
+    cout << "\n===== Registration Queue =====\n";
+
+    int position = 1;
 
     for (int i = front; i <= rear; i++) {
-        cout << queue[i].learnerID << " - "
+        cout << position << ". "
+             << queue[i].learnerID << " - "
              << queue[i].name << endl;
+        position++;
     }
 }
 
 void LearnerQueue::displayActiveSession() {
 
+    cout << "\n===== Active Session =====\n";
+    cout << "Capacity: " << activeCount << " / " << SESSION_CAPACITY << endl;
+
     if (activeCount == 0) {
-        cout << "No active learners.\n";
+        cout << "No learners currently in session.\n";
         return;
     }
 
-    cout << "\nActive Session:\n";
-
     for (int i = 0; i < activeCount; i++) {
-        cout << activeSession[i].learnerID << " - "
+        cout << i + 1 << ". "
+             << activeSession[i].learnerID << " - "
              << activeSession[i].name << endl;
     }
+}
+
+bool LearnerQueue::learnerExists(int learnerID) {
+
+    // Check queue
+    for (int i = front; i <= rear; i++) {
+        if (queue[i].learnerID == learnerID)
+            return true;
+    }
+
+    // Check active session
+    for (int i = 0; i < activeCount; i++) {
+        if (activeSession[i].learnerID == learnerID)
+            return true;
+    }
+
+    return false;
 }

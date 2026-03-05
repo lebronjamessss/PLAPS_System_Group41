@@ -17,12 +17,18 @@ private:
     Learner activeSession[SESSION_CAPACITY];
     int activeCount;
 
+    int nextLearnerID;
+
+    bool learnerExists(int learnerID);
+
 public:
 
     LearnerQueue();
 
     bool isEmpty();
     bool isFull();
+    
+    int generateLearnerID();
 
     void registerLearner(Learner learner);
     void startSession();
