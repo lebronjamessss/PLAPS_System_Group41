@@ -17,9 +17,7 @@ private:
     Learner activeSession[SESSION_CAPACITY];
     int activeCount;
 
-    int nextLearnerID;
-
-    bool learnerExists(int learnerID);
+    int nextLearnerID;    
 
 public:
 
@@ -36,6 +34,8 @@ public:
 
     void displayQueue();
     void displayActiveSession();
+
+    bool learnerExists(int learnerID);
 
 };
 

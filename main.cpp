@@ -1,6 +1,7 @@
 #include <iostream>
 #include "LearnerQueue.hpp"
 #include "Learner.hpp"
+#include "ActivityStack.hpp"
 
 using namespace std;
 
@@ -25,9 +26,20 @@ void showLearnerMenu() {
     cout << "Choose option: ";
 }
 
+void showActivityMenu() {
+    cout << "\n===== Activity Navigation & Session Flow =====\n";
+    cout << "1. Complete Activity\n";
+    cout << "2. Undo Last Activity\n";
+    cout << "3. Show Current Activity\n";
+    cout << "4. Show Completed Activities\n";
+    cout << "5. Back\n";
+    cout << "Choose option: ";
+}
+
 int main() {
 
     LearnerQueue learnerQueue;
+    ActivityStack activityStack;
 
     int choice;
 
@@ -115,7 +127,101 @@ int main() {
         }
 
         else if (choice == 2) {
-            cout << "\n[Task 2 - Stack Module]\n";
+            int option;
+
+            do {
+
+                showActivityMenu();
+
+                if (!(cin >> option)) {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    cout << "Invalid input.\n";
+                    continue;
+                }
+
+                if (option == 1) {
+
+                    Activity activity;
+
+                    cout << "Enter Learner ID: ";
+                    cin >> activity.learnerID;
+
+                    if (!learnerQueue.learnerExists(activity.learnerID)) {
+                        cout << "Learner not registered in system.\n";
+                        continue;
+                    }
+
+                    cout << "Enter Activity ID: ";
+                    cin >> activity.activityID;
+
+                    cin.ignore(1000, '\n');
+
+                    cout << "Enter Topic: ";
+                    getline(cin, activity.topic);
+
+                    while (true) {
+                        cout << "Enter Difficulty (1-5): ";
+                        cin >> activity.difficulty;
+
+                        if (activity.difficulty >= 1 && activity.difficulty <= 5) {
+                            break;
+                        }
+
+                        cout << "Difficulty must be between 1 and 5.\n";
+                    }
+
+                    while (true) {
+                        cout << "Enter Score: ";
+                        cin >> activity.score;
+
+                        if (activity.score >= 1 && activity.score <= 100) {
+                            break;
+                        }
+
+                        cout << "Score must be between 1 and 100.\n";
+                    }
+
+                    // cout << "Enter Score: ";
+                    // cin >> activity.score;
+
+                    activityStack.push(activity);
+
+                    cout << "Activity completed and stored.\n";
+                }
+
+                else if (option == 2) {
+
+                    activityStack.pop();
+                    cout << "Last activity undone.\n";
+
+                }
+
+                else if (option == 3) {
+
+                    if (!activityStack.isEmpty()) {
+
+                        Activity current = activityStack.peek();
+
+                        cout << "\nCurrent Activity\n";
+                        cout << "ID: " << current.activityID << endl;
+                        cout << "Topic: " << current.topic << endl;
+                        cout << "Score: " << current.score << endl;
+                        cout << "Difficulty: " << current.difficulty << endl;
+
+                    } else {
+                        cout << "No activities completed yet.\n";
+                    }
+
+                }
+
+                else if (option == 4) {
+
+                    activityStack.display();
+
+                }
+
+            } while (option != 5);
         }
 
         else if (choice == 3) {
