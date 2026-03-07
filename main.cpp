@@ -2,6 +2,7 @@
 #include "LearnerQueue.hpp"
 #include "Learner.hpp"
 #include "ActivityStack.hpp"
+#include "ActivityLogCircularQueue.hpp"
 
 using namespace std;
 
@@ -25,6 +26,14 @@ void showLearnerMenu() {
     cout << "6. Back\n";
     cout << "Choose option: ";
 }
+void showLogMenu() {
+    cout << "\n===== Recent Activity Logging =====\n";
+    cout << "1. Show All Activity Logs\n";
+    cout << "2. Filter Logs by Learner ID\n";
+    cout << "3. Export Logs to CSV\n";
+    cout << "4. Back\n";
+    cout << "Choose option: ";
+}
 
 void showActivityMenu() {
     cout << "\n===== Activity Navigation & Session Flow =====\n";
@@ -40,6 +49,7 @@ int main() {
 
     LearnerQueue learnerQueue;
     ActivityStack activityStack;
+    ActivityLogCircularQueue activityLog;
 
     int choice;
 
@@ -186,6 +196,7 @@ int main() {
                     // cin >> activity.score;
 
                     activityStack.push(activity);
+                    activityLog.addLog(activity);
 
                     cout << "Activity completed and stored.\n";
                 }
@@ -225,7 +236,44 @@ int main() {
         }
 
         else if (choice == 3) {
-            cout << "\n[Task 3 - Circular Queue Module]\n";
+
+            int option;
+
+            do {
+
+                showLogMenu();
+
+                if (!(cin >> option)) {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    cout << "Invalid input.\n";
+                    continue;
+                }
+
+                if (option == 1) {
+
+                    activityLog.displayLogs();
+
+                }
+
+                else if (option == 2) {
+
+                    int learnerID;
+
+                    cout << "Enter Learner ID: ";
+                    cin >> learnerID;
+
+                    activityLog.filterByLearner(learnerID);
+
+                }
+
+                else if (option == 3) {
+
+                    activityLog.exportCSV("activity_logs.csv");
+
+                }
+
+            } while (option != 4);
         }
 
         else if (choice == 4) {
