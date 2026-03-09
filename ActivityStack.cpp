@@ -5,6 +5,7 @@ using namespace std;
 
 ActivityStack::ActivityStack() {
     top = -1;
+    nextActivityID = 1;
 }
 
 bool ActivityStack::isEmpty() {
@@ -67,4 +68,8 @@ void ActivityStack::display() {
         cout << "Score: " << stack[i].score << endl;
         cout << "-----------------------------\n";
     }
+}
+
+int ActivityStack::generateActivityID() {
+    return nextActivityID++;
 }

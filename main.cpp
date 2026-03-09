@@ -154,21 +154,50 @@ int main() {
 
                     Activity activity;
 
-                    cout << "Enter Learner ID: ";
-                    cin >> activity.learnerID;
-
-                    if (!learnerQueue.learnerExists(activity.learnerID)) {
-                        cout << "Learner not registered in system.\n";
-                        continue;
-                    }
-
-                    cout << "Enter Activity ID: ";
-                    cin >> activity.activityID;
-
                     cin.ignore(1000, '\n');
 
-                    cout << "Enter Topic: ";
-                    getline(cin, activity.topic);
+                    while (true) {
+
+                        cout << "Enter Learner ID: ";
+
+                        string input;
+                        getline(cin, input);
+
+                        if (input.empty()) {
+                            cout << "Learner ID cannot be empty.\n";
+                            continue;
+                        }
+
+                        try {
+                            activity.learnerID = stoi(input);
+                        }
+                        catch (...) {
+                            cout << "Learner ID must be a number.\n";
+                            continue;
+                        }
+
+                        if (!learnerQueue.learnerExists(activity.learnerID)) {
+                            cout << "Learner not registered in system.\n";
+                            continue;
+                        }
+
+                        break;
+                    }
+
+                    activity.activityID = activityStack.generateActivityID();
+
+                    cout << "Assigned Activity ID: " << activity.activityID << endl;
+                    
+                    while (true) {
+                        cout << "Enter Topic: ";
+                        getline(cin, activity.topic);
+
+                        if (!activity.topic.empty()) {
+                            break;
+                        }
+
+                        cout << "Topic cannot be empty. Please enter a valid topic.\n";
+                    }
 
                     while (true) {
                         cout << "Enter Difficulty (1-5): ";

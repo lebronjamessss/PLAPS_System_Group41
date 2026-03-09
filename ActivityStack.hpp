@@ -20,9 +20,13 @@ private:
     Activity stack[MAX_STACK];
     int top;
 
+    int nextActivityID;
+
 public:
 
     ActivityStack();
+
+    int generateActivityID();
 
     bool isEmpty();
     bool isFull();
