@@ -31,6 +31,9 @@ public:
 
     void exportCSV(std::string filename);
 
+    // used for recent performance calcs (riskpriorityqueue) // addded by Sean
+    void getLearnerPerformanceMetrics(int learnerID, int &activityCount, int &totalScore, int &failedAttempts);
+
 };
 
 #endif

@@ -130,3 +130,29 @@ void ActivityLogCircularQueue::exportCSV(string filename) {
 
     cout << "\nLogs exported to " << filename << endl;
 }
+
+// used for recent performance calcs (riskpriorityqueue) // addded by Sean
+void ActivityLogCircularQueue::getLearnerPerformanceMetrics(int learnerID, int &activityCount, int &totalScore, int &failedAttempts){
+    activityCount = 0;
+    totalScore = 0;
+    failedAttempts = 0;
+
+    if (isEmpty()){
+        return;
+    }
+
+    int index = front;
+    for (int i = 0; i < count ; i++){
+        Activity activity = logs[index];
+        
+        if (activity.learnerID == learnerID){
+            activityCount ++;
+            totalScore += activity.score;
+
+            if(activity.score < 40){ 
+                failedAttempts++;
+            }
+        }
+        index = (index + 1) % MAX_LOG;
+    }
+}

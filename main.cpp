@@ -3,6 +3,7 @@
 #include "Learner.hpp"
 #include "ActivityStack.hpp"
 #include "ActivityLogCircularQueue.hpp"
+#include "RiskPriorityQueue.hpp"
 
 using namespace std;
 
@@ -45,11 +46,21 @@ void showActivityMenu() {
     cout << "Choose option: ";
 }
 
+void showRiskMenu() {
+    cout << "\n===== Learner Risk Management =====\n";
+    cout << "1. Refresh Calculations and Rank Learners by Risk\n";
+    cout << "2. Top 5 Learners and Recommendations\n";
+    cout << "3. Export High Priority Learners\n";
+    cout << "4. Back\n";
+    cout << "Choose option: ";
+}
+
 int main() {
 
     LearnerQueue learnerQueue;
     ActivityStack activityStack;
     ActivityLogCircularQueue activityLog;
+    RiskPriorityQueue riskQueue;
 
     int choice;
 
@@ -306,7 +317,146 @@ int main() {
         }
 
         else if (choice == 4) {
-            cout << "\n[Task 4 - Priority Queue Module]\n";
+
+            int option;
+
+            do {
+                showRiskMenu();
+                if (!(cin >> option)) {
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                    cout << "Invalid input.\n";
+                    continue;
+                }
+
+                if (option == 1) {
+
+                    while(!riskQueue.empty()) { 
+
+                        riskQueue.pop(); 
+
+                    }
+
+                    for (int id = 1001; id <= 1100; id++) { 
+                        
+                        if (learnerQueue.learnerExists(id)) {
+
+                            riskQueue.evaluateAndPushLearner(id, activityLog);
+
+                        }
+                    }
+
+                    if (riskQueue.empty()) {
+
+                        cout << "No learners are currently at risk.\n";
+
+                    } else {
+
+                        riskQueue.printAtRiskLearners(riskQueue, -1, -1);
+
+                    }
+                }
+                else if (option == 2) {
+                    
+                    if (riskQueue.empty()) {
+
+                        for (int id = 1001; id <= 1100; id++) {
+
+                            if (learnerQueue.learnerExists(id)) 
+
+                                riskQueue.evaluateAndPushLearner(id, activityLog);
+
+                        }
+                    }
+
+                    int inputThreshold;
+
+                    do {
+                        
+                        cout << "\n|=- Select a Learner Risk Rating to Display -=|" << endl;
+                        cout << "1. All" << endl;
+                        cout << "2. High Priority" << endl;
+                        cout << "3. Moderate Priority" << endl;
+                        cout << "4. Low Priority" << endl;
+                        cout << "5. Minimal Priority." << endl;
+                        cout << "6. Exit." << endl;
+                        cout << "Choose option: ";
+
+                        if (!(cin >> inputThreshold)) {
+                            cin.clear();
+                            cin.ignore(1000, '\n');
+                            cout << "Invalid input.\n";
+                            continue;
+                        }
+
+                        if (inputThreshold == 6) break;
+
+                        if (riskQueue.empty()) {
+
+                            cout << "No at-risk learners require attention at the moment.\n";
+                            break;
+
+                        } else {
+
+                            riskQueue.printAtRiskLearners(riskQueue, 5, inputThreshold);
+                            break;
+                        }
+
+                    }
+                    while (inputThreshold != 6);
+                    
+                }
+                else if (option == 3) {
+
+                    if (riskQueue.empty()) {
+
+                        for (int id = 1001; id <= 1100; id++) {
+
+                            if (learnerQueue.learnerExists(id)) 
+
+                                riskQueue.evaluateAndPushLearner(id, activityLog);
+
+                        }
+                    }
+
+                    int inputThreshold;
+
+                    do {
+
+                        cout << "\n|=- Select a Learner Risk Rating to Export -=|" << endl;
+                        cout << "1. All" << endl;
+                        cout << "2. High Priority" << endl;
+                        cout << "3. Moderate Priority" << endl;
+                        cout << "4. Low Priority" << endl;
+                        cout << "5. Minimal Priority." << endl;
+                        cout << "6. Exit." << endl;
+                        cout << "Choose option: ";
+
+                        if (!(cin >> inputThreshold)) {
+                            cin.clear();
+                            cin.ignore(1000, '\n');
+                            cout << "Invalid input.\n";
+                            continue;
+                        }
+
+                        if (inputThreshold == 6) break;
+
+                        if (riskQueue.empty()) {
+
+                            cout << "No at-risk learners to export.\n";
+
+                        } else {
+
+                            riskQueue.exportRiskCSV("at_risk_learners.csv", riskQueue, inputThreshold);
+
+                        }
+
+                    } while (inputThreshold != 6);
+
+                }
+
+            } while (option != 4);
+        
         }
 
     } while (choice != 5);
