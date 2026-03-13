@@ -4,7 +4,7 @@
 #include "ActivityStack.hpp"
 #include <string>
 
-const int MAX_LOG = 10;
+const int MAX_LOG = 100;
 
 class ActivityLogCircularQueue {
 
